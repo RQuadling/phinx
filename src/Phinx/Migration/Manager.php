@@ -231,9 +231,10 @@ class Manager
      *
      * @param string $environment Environment
      * @param int $version
+     * @param bool $force
      * @return void
      */
-    public function rollback($environment, $version = null)
+    public function rollback($environment, $version = null, $force = false)
     {
         $migrations = $this->getMigrations();
         $versions = $this->getEnvironment($environment)->getVersions(true);
@@ -275,7 +276,7 @@ class Manager
                 break;
             }
             if (array_key_exists($migration->getVersion(), $versions)) {
-                if (isset($versions[$migration->getVersion()]) && 0 != $versions[$migration->getVersion()]['breakpoint']){
+                if (isset($versions[$migration->getVersion()]) && 0 != $versions[$migration->getVersion()]['breakpoint'] && !$force){
                     $this->getOutput()->writeln('<error>Breakpoint reached. Further rollbacks inhibited.</error>');
                     break;
                 }
